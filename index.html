@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Minzi Kisuke Payment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gray-dark:    #2a2a2a;
+      --gray-mid:     #4a4a4a;
+      --gray-light:   #7a7a7a;
+      --white:        #ffffff;
+      --shadow-card:  0 8px 40px rgba(0,0,0,0.30);
+      --shadow-btn:   0 4px 18px rgba(0,0,0,0.40);
+      --radius-card:  22px;
+      --radius-btn:   12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: url('https://roxy-upload.nyzz.my.id/kgrq8p') center center / cover no-repeat fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      font-family: 'DM Sans', sans-serif;
+      padding: 40px 20px 60px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Dark overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.42);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    /* === HEADER === */
+    .header {
+      text-align: center;
+      animation: fadeDown 0.7s ease both;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.8);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.22);
+      backdrop-filter: blur(8px);
+    }
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 6vw, 38px);
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 2px 16px rgba(0,0,0,0.5);
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+    }
+    .header h1 span {
+      color: rgba(220,220,220,0.9);
+    }
+    .header-line {
+      width: 60px; height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #555, #999);
+      margin: 14px auto 0;
+    }
+
+    /* === QR CARD === */
+    .qr-wrap {
+      width: 100%;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    .qr-card {
+      background: rgba(140,140,140,0.18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1.5px solid rgba(255,255,255,0.20);
+      border-radius: var(--radius-card);
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.28);
+    }
+    .qr-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .qr-image {
+      width: 220px;
+      height: 220px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 3px solid rgba(255,255,255,0.28);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+      background: #fff;
+    }
+    .qr-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .qr-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.80);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+    }
+
+    /* === DOWNLOAD BTN === */
+    .btn-download {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #4a4a4a 0%, #1e1e1e 100%);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 16px 28px;
+      border-radius: var(--radius-btn);
+      border: 1.5px solid rgba(255,255,255,0.18);
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      animation: fadeUp 0.7s 0.2s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-download::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, transparent 60%);
+      border-radius: inherit;
+    }
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.50);
+    }
+    .btn-download:active { transform: translateY(0); opacity: 0.9; }
+    .btn-download svg { flex-shrink: 0; }
+
+    /* === PAYMENT CARDS === */
+    .payment-card {
+      width: 100%;
+      background: rgba(140,140,140,0.18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1.5px solid rgba(255,255,255,0.20);
+      border-radius: var(--radius-card);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+      overflow: hidden;
+      animation: fadeUp 0.7s ease both;
+    }
+    .payment-card:nth-child(4) { animation-delay: 0.3s; }
+    .payment-card:nth-child(5) { animation-delay: 0.4s; }
+
+    .card-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.07);
+    }
+    .card-logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-img-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1.5px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+    }
+
+    .card-body {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-info { flex: 1; min-width: 0; }
+    .card-number {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    .card-an {
+      font-size: 12px;
+      color: rgba(255,255,255,0.60);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .btn-copy {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.14);
+      color: #ffffff;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-radius: 9px;
+      padding: 8px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+      backdrop-filter: blur(6px);
+    }
+    .btn-copy:hover {
+      background: rgba(80,80,80,0.85);
+      color: #ffffff;
+      border-color: rgba(255,255,255,0.35);
+      transform: scale(1.04);
+    }
+    .btn-copy.copied {
+      background: #2a2a2a;
+      color: #ffffff;
+      border-color: rgba(255,255,255,0.2);
+    }
+    .btn-copy svg { flex-shrink: 0; }
+
+    /* === FOOTER === */
+    .footer {
+      text-align: center;
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.40);
+      animation: fadeUp 0.7s 0.5s ease both;
+      letter-spacing: 0.3px;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-badge">Pembayaran</div>
+      <h1>Minzi Kisuke<br><span>Payment</span></h1>
+      <div class="header-line"></div>
+    </div>
+
+    <!-- QR Image -->
+    <div class="qr-wrap">
+      <div class="qr-card">
+        <div class="qr-inner">
+          <div class="qr-image">
+            <img src="https://roxy-upload.nyzz.my.id/p39sbj" alt="QRIS" />
+          </div>
+          <div class="qr-label">Scan untuk membayar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download QRIS Button -->
+    <a class="btn-download" href="https://roxy-upload.nyzz.my.id/p39sbj" download="QRIS-MinziKisuke.jpg">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Unduh QRIS
+    </a>
+
+    <!-- DANA Card -->
+    <div class="payment-card">
+      <div class="card-header">
+        <div class="card-logo-wrap">
+          <div class="logo-img-box">
+            <img src="https://roxy-upload.nyzz.my.id/pyn4st" alt="DANA" />
+          </div>
+        </div>
+        <div class="card-name">DANA</div>
+      </div>
+      <div class="card-body">
+        <div class="card-info">
+          <div class="card-number" id="dana-number">0895-4023-08034</div>
+          <div class="card-an">A/N : ASIH AMALIA</div>
+        </div>
+        <button class="btn-copy" onclick="copyText('dana-number', this)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          Salin
+        </button>
+      </div>
+    </div>
+
+    <!-- SEA BANK Card -->
+    <div class="payment-card">
+      <div class="card-header">
+        <div class="card-logo-wrap">
+          <div class="logo-img-box">
+            <img src="https://roxy-upload.nyzz.my.id/lmjalp" alt="SEA BANK" />
+          </div>
+        </div>
+        <div class="card-name">SEA BANK</div>
+      </div>
+      <div class="card-body">
+        <div class="card-info">
+          <div class="card-number" id="sea-number">901263467719</div>
+          <div class="card-an">A/N : ASIH AMALIA</div>
+        </div>
+        <button class="btn-copy" onclick="copyText('sea-number', this)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          Salin
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      © 2025 Minzi Kisuke · Secure Payment
+    </div>
+
+  </div>
+
+  <script>
+    function copyText(id, btn) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = `
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Disalin!`;
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
